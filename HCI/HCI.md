@@ -658,3 +658,109 @@ ANOVA是最常见的实验方法，目的是**检验独立变量是否对依赖�
 然后得到结论：
 
 > The grand mean for task completion time was 15.4 seconds. Device 3 was the fastest at 13.8 seconds, while device 1 was the  slowest at 17.0 seconds. The main effect of device on task completion time was statistically significant ($F_{2,22} = 5.865,  p <.01$).  【设备显著性差异】The task effect was modest, however. Task completion time was  15.6 seconds for task 1. Task 2 was slightly faster at 15.3 seconds; however, the difference was not statistically significant  ($F_{1,11} = 0.076$, ns). 【任务显著性差异】The results by device and task are shown in Figure x. There was a significant Device × Task interaction effect ($F_{2,22} = 5.435, p < .05$), which was due solely to the difference  between device 1 task 2 and device 3 task 2, as determined by a Scheffé post hoc analysis. 【交叉效应引起显著性差异】
+
+### Chi-Square Test
+
+卡方检验主要用于测试定类数据，或者定序变量。
+
+它所面对的数据往往是一个情形分析表，观测数据按照多个属性得来的频数分布表，比如完成某件事情的某一个人群的占比。
+
+它主要是为了比较观测数据与期望数据。观测表是实验测试得到的，期望表则是希望得到有无显著性差异。比如问题是男性和女性在滑动桌面系统时在方法上是否有差异，结果如下
+
+<img src="HCI.assets/image-20210427185700689.png" alt="image-20210427185700689" style="zoom:80%;" />
+
+MW是鼠标滚轮，CD是点击拖动，KB是键盘。我们不能单从频率上确定男性比女性更常使用CD这个功能，而需要一个测试方法来看是否真的有显著性差异。
+
+我们需要得到一张**期望值表**。这个期望值表的求法是从观测表计算，对于$(i,j)$的数值，那么对应的
+$$
+E(i,j) = \frac{\sum R_i \sum C_j}{rc}
+$$
+其中$r$是行数，$c$是列数，$R_i$是第$i$行之和，$C_j$是第$j$列之和。对上表进行运算，得到结果
+
+<img src="HCI.assets/image-20210427190236716.png" alt="image-20210427190236716" style="zoom:80%;" />
+
+接下来，计算卡方表的数值
+$$
+\chi^2(i,j) = \frac{(E(i,j)-M(i,j))^2}{E(i,j)}
+$$
+其中$E(i,j)$为期望值，$M(i,j)$为原始值。对上表进行运算，得到结果
+
+<img src="HCI.assets/image-20210427190433387.png" alt="image-20210427190433387" style="zoom:80%;" />
+
+之后选定一个显著性水平，比如$0.05$。再确定自由度
+$$
+df = (r-1)(c-1)
+$$
+对于不同阈值，显著性水平表如下
+
+<img src="HCI.assets/image-20210427190540336.png" alt="image-20210427190540336" style="zoom:80%;" />
+
+在上面的实验中，$df=(2-1)(3-1)=2$，所以查表得到数据是$5.99$。由于刚才计算的$\chi^2$是$1.462<5.99$，说明没有显著性差异。
+
+再来看一个例子，验证老师、家长、学生在带手机上学态度上的差异。
+
+<img src="HCI.assets/image-20210427191210927.png" alt="image-20210427191210927" style="zoom:80%;" />
+
+$\chi^2=20.5,df=2$，在$\alpha=0.001$上有显著性差异。
+
+### 非参数测试
+
+对于非参数测试的方法，下表给出。
+
+<img src="HCI.assets/image-20210427191115045.png" alt="image-20210427191115045" style="zoom:80%;" />
+
+一、Mann-Whitney U
+
+考虑下面的例子：Mac人和Windows人是否和政治倾向有影响？用1-10表示左倾和右倾。各选择10个人结果如下：
+
+<img src="HCI.assets/image-20210427191425815.png" alt="image-20210427191425815" style="zoom:80%;" />
+
+这个是一个被试间测试，并且只有2个人。所以使用Mann-Whitney U。
+
+![image-20210427192339532](HCI.assets/image-20210427192339532.png)
+
+得到校正后的$p$值是$.14>.05$，所以可以认为没有显著性差异。
+
+二、Wilcoxon Signed-Rank Test
+
+假设一个媒体播放器的两种设计A,B对年轻用户更有吸引力？1表示相当不酷，10表示相当酷。对10个人用两个测试条件都进行实验，得到结论
+
+<img src="HCI.assets/image-20210427192630852.png" alt="image-20210427192630852" style="zoom:67%;" />
+
+由于这是一个被试内问题，并且针对两个主体，所以使用Wilcoxon Signed-Rank Test。
+
+![image-20210427192723199](HCI.assets/image-20210427192723199.png)
+
+$p=0.02<0.05$，可以认为A比B更具有吸引力。
+
+三、Kruskal-Wallis Test
+
+考虑年龄因素对某种新的GPS设备接受度是否有影响，从3个年龄段找8个用户，分别是20-29、30-39、40-49，用1-10表示购买欲望。结果如下
+
+<img src="HCI.assets/image-20210427193035371.png" alt="image-20210427193035371" style="zoom:80%;" />
+
+平均值是7.1、4.0、2.9，应该是有差异的。
+
+![image-20210427193218521](HCI.assets/image-20210427193218521.png)
+
+$p=.0082<.01$，所以在是否接受上三类人群有显著性差异。
+
+四、Friedman Test
+
+有四种接口A,B,C,D，在搜索引擎搜索过程当中，是否会影响搜索质量？
+
+首先找8个受试者，然后做一系列的实验，使用四种接口方式来搜索某个任务。用拉丁方阵混淆，然后用1-100评价使用结果。得到数据如下
+
+<img src="HCI.assets/image-20210427193542650.png" alt="image-20210427193542650" style="zoom:80%;" />
+
+四列的均值分别是71.0、68.1、60.9、69.8.这个数据是否有统计意义？结果如下
+
+<img src="HCI.assets/image-20210427193737856.png" alt="image-20210427193737856" style="zoom:80%;" />
+
+$p=.0337<.05$，所以可以说在$\alpha=.05$水平下符合。
+
+当然，对于多条件，还是建议使用后此分析。
+
+## CV for HCI
+
+CV不听了
